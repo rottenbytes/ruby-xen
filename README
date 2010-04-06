@@ -1,0 +1,31 @@
+A very simple ruby module to access Xen informations.
+
+How to use it :
+
+x=Xen::XenServer.new
+
+puts x.has? "non-existant"
+puts x.has? "domu2"
+puts x.slices
+
+s=x.get("domu2")
+s2=x.get("Domain-0")
+
+puts s.time
+puts s2.time
+sleep(10)
+x.update
+puts s.time
+puts s2.time
+
+TODO :
+
+- work on state of the VM
+- work on pause/create/stop
+- work on migration
+- work on configuration of the VMs (read/modify/write)
+
+Creating & installing the gem :
+
+gem build xen.gemspec
+sudo gem install xen-<version>.gem
