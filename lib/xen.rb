@@ -14,7 +14,7 @@ module Xen
 	    def running?
 		    output=`xm list #{@name}`
 		    $? == 0 ? true : false
-	    end        
+	    end
     end
 
 
@@ -72,5 +72,19 @@ module Xen
 	            nil
             end
         end
+        
+        def migrate(name, destination)
+            if self.has? name then
+                `xm migrate --live #{name} #{destination}`
+                if $? == 0 then
+                    true
+                else
+                    false
+                end
+            else
+                false
+            end
+        end
+        
     end
 end
