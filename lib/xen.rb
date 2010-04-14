@@ -36,17 +36,7 @@ module Xen
 	    end
 
 	    def update 
-		    output = `xm list`
-		
-		    output.each { |line|
-			    line.grep(/(.*)\s+(\d+)\s+(\d+)\s+(\d+)\s+(.*?)\s+(\d+.\d)/) {
-			        @domus[$1.strip].id = $2.strip
-                    @domus[$1.strip].memory = $3.strip
-                    @domus[$1.strip].vcpus = $4.strip
-                    @domus[$1.strip].state = $5.strip
-                    @domus[$1.strip].time = $6.strip
-                }
-		    }
+            self.initialize()
 	    end
 	
 	    def slices
