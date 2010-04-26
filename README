@@ -20,9 +20,6 @@ puts s2.time
 
 TODO :
 
-- work on state of the VM
-- work on pause/create/stop
-- work on migration
 - work on configuration of the VMs (read/modify/write)
 
 Creating & installing the gem :

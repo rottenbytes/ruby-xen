@@ -15,6 +15,10 @@ module Xen
 		    output=`xm list #{@name}`
 		    $? == 0 ? true : false
 	    end
+	    
+	    def status?
+	        @state.gsub("-","")
+	    end
     end
 
 
@@ -35,11 +39,34 @@ module Xen
 		    }
 	    end
 
+        def success?(var)
+            if var == 0 then
+                true
+            else
+                false
+            end
+        end
+
 	    def update 
-            self.initialize()
+		    @domus = {}
+		    output = `xm list`
+		
+		    output.each { |line|
+			    line.grep(/(.*)\s+(\d+)\s+(\d+)\s+(\d+)\s+(.*?)\s+(\d+.\d)/) {
+			        @domus[$1.strip] = XenInstance.new($1.strip, 
+                                :id => $2.strip,
+                                :memory => $3.strip,
+                                :vcpus => $4.strip,
+                                :state => $5.strip,
+                                :time => $6.strip )
+                }
+		    }
+		    nil
 	    end
 	
 	    def slices
+	        self.update
+	        
 	        rslt = []
 	        @domus.each_key { |k|
 	            rslt << k
@@ -48,6 +75,8 @@ module Xen
 	    end
 	
 	    def has?(name)
+	        self.update
+	        
 	        if @domus.has_key? name then
 	            true
 	        else
@@ -66,15 +95,41 @@ module Xen
         def migrate(name, destination)
             if self.has? name then
                 `xm migrate --live #{name} #{destination}`
-                if $? == 0 then
-                    true
-                else
-                    false
-                end
+                 self.success? $?
             else
                 false
             end
         end
         
+        def create(name)
+            if self.has? name then
+                false
+            else
+                `xm create #{name}.cfg`
+                 self.success? $? 
+            end
+        end
+        
+        def destroy(name)
+            if self.has? name then
+                `xm destroy #{name}`
+                self.success? $?
+            else
+                false
+            end
+        end
+        
+        def pause(name)
+            if self.has? name then
+                if self.get(name).status? != "p" then
+                    `xm pause #{name}`
+                else
+                    `xm unpause #{name}`
+                end
+                self.success? $?
+            else
+                false
+            end
+        end
     end
 end
