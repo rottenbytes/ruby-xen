@@ -18,6 +18,17 @@ x.update
 puts s.time
 puts s2.time
 
+# live migrate VM "domu2" to host "10.0.0.2"
+x.migrate("domu2", "10.0.0.2")
+
+# pause VM "domu2"
+x.pause("domu2")
+
+# create & destroy a domU
+x.create("domu2")
+x.destroy("domu2")
+
+
 TODO :
 
 - work on configuration of the VMs (read/modify/write)
